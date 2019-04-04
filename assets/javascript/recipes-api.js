@@ -129,26 +129,38 @@ $(document).on("click", ".favoriteIcon", function () {
     console.log('User ID', user.uid)
     user = user.uid
 
-    // Check recipe already exists in favorites
-    console.log(user)
-    let favRef = database.ref(`/users/${user}/favorites`)
-    let favArray = [];
-    favRef.once("value", function (snapshot) {
-      snapshot.forEach((childSnapshot) => {
-        let favList = childSnapshot.val();
-        favArray.push(favList);
-      })
-      console.log('favArray', favArray)
-      if (favArray.includes(favoritedRecipe)) {
-        console.log('Favorite recipe already exsits')
-        // Message user know recipe already stored in favorites
-        M.toast({ html: 'Recipe already stored in your favorites' })
+    // Check recipe already exists in favorites - using Firebase exists method
+    console.log('user', user)
+    let favRef = database.ref(`/users/${user}/`);
+    favRef.orderByChild("favorites").equalTo(favoritedRecipe).once("value", function (snapshot) {
+      if (snapshot.exists()) {
+        console.log('does exists')
       } else {
-        console.log('new favorite add to list - adding to Firebase database')
-        database.ref(`users/${user}/favorites`).push(favoritedRecipe);
-        favArray = [];
+        console.log("does not exists")
       }
     });
+
+
+    // Check recipe already exists in favorites
+    // console.log(user)
+    // let favRef = database.ref(`/users/${user}/favorites`)
+    // let favArray = [];
+    // favRef.once("value", function (snapshot) {
+    //   snapshot.forEach((childSnapshot) => {
+    //     let favList = childSnapshot.val();
+    //     favArray.push(favList);
+    //   })
+    //   console.log('favArray', favArray)
+    //   if (favArray.includes(favoritedRecipe)) {
+    //     console.log('Favorite recipe already exsits')
+    //     // Message user know recipe already stored in favorites
+    //     M.toast({ html: 'Recipe already stored in your favorites' })
+    //   } else {
+    //     console.log('new favorite add to list - adding to Firebase database')
+    //     database.ref(`users/${user}/favorites`).push(favoritedRecipe);
+    //     favArray = [];
+    //   }
+    // });
   })
 });
 
