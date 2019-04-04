@@ -137,6 +137,8 @@ $(document).on("click", ".favoriteIcon", function () {
         console.log('does exists')
       } else {
         console.log("does not exists")
+        console.log('new favorite add to list - adding to Firebase database')
+        database.ref(`users/${user}/favorites`).push(favoritedRecipe);
       }
     });
 
